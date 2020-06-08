@@ -13,15 +13,24 @@ public class TService {
 	@Autowired
 	private TRepository repository;
 	
-	@Autowired
-	private Handler handler;
+//	@Autowired
+//	private Handler handler;
 	
-	public TService(TRepository repository,Handler handler) {
+	public TService(TRepository repository) {
 		this.repository = repository;
-		this.handler = handler;
+//		this.handler = handler;
 	}
 	
 	public Info createInfo(Info info) {
+		
+		System.out.println(info.getClassX());
+		 System.out.println(info.getDate());
+		 System.out.println(info.getGrade());
+		 System.out.println(info.getName());
+		 System.out.println(info.getNote());
+		 System.out.println(info.getTemperature());
+		 System.out.println(info.getNote());
+		
 		
 		Info tmp = new Info();
 		tmp.setNote(info.getNote());

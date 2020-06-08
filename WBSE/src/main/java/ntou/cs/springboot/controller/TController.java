@@ -21,17 +21,25 @@ public class TController {
 	private TService Tservice;
 	
 	 @PostMapping
-	    public ResponseEntity<Info> createNote( @PathVariable("id") String id,@ModelAttribute Info request) {
+	    public ResponseEntity<Info> createNote(@ModelAttribute Info request) {
+		 
+		 System.out.println(request.getClassX());
+		 System.out.println(request.getDate());
+		 System.out.println(request.getGrade());
+		 System.out.println(request.getName());
+		 System.out.println(request.getNote());
+		 System.out.println(request.getTemperature());
+		 System.out.println(request.getNote());
 		 
 		 Info info = Tservice.createInfo(request);
 
-	        URI location = ServletUriComponentsBuilder
-	                .fromCurrentRequest()
-	                .path("/{id}")
-	                .buildAndExpand(info.getNumber())
-	                .toUri();
+//	        URI location = ServletUriComponentsBuilder
+//	                .fromCurrentRequest()
+//	                .path("/{id}")
+//	                .buildAndExpand(info.getNumber())
+//	                .toUri();
 
-	        return ResponseEntity.created(location).body(info);
+	        return ResponseEntity.ok().body(info);
 	    }
 	
 	
