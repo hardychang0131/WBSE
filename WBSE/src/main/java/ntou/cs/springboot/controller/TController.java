@@ -1,7 +1,9 @@
 package ntou.cs.springboot.controller;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import ntou.cs.springboot.entity.Info;
 import ntou.cs.springboot.service.TService;
+
 @RestController
 @RequestMapping(value = "/thermometer")
 public class TController {
@@ -67,6 +70,29 @@ public class TController {
 	        return ResponseEntity.ok().body(info);
 	    }
 	 	
+	 	@PutMapping("/teacher")
+	    public ResponseEntity<Info> tupdateInfo(@ModelAttribute Info request) {
+		 
+		 System.out.println(request.getClassX());
+		 System.out.println(request.getDate());
+		 System.out.println(request.getGrade());
+		 System.out.println(request.getName());
+		 System.out.println(request.getNote());
+		 System.out.println(request.getTemperature());
+		 System.out.println(request.getNote());
+		 
+		 Info info = Tservice.insertInfo(request);
+
+//	        URI location = ServletUriComponentsBuilder
+//	                .fromCurrentRequest()
+//	                .path("/{id}")
+//	                .buildAndExpand(info.getNumber())
+//	                .toUri();
+
+	        return ResponseEntity.ok().body(info);
+	    }
+	 	
+	 	
 	 	//老師查看所有學生表單
 		@GetMapping("/teacher")
 		public ResponseEntity<List<Info>> findbyid(){
@@ -79,9 +105,5 @@ public class TController {
 			
 			return ResponseEntity.ok().body(Tservice.findinfo(id));
 		}
-	 
-
-		
-	
 	
 }
