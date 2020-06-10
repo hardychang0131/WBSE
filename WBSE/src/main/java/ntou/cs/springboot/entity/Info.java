@@ -15,7 +15,7 @@ public class Info {
      * class : 甲
      * grade : 3
      */
-
+	private String id;
     private String date;
     private String name;
     private String number;
@@ -23,7 +23,22 @@ public class Info {
     private double temperature;
     private String classX;
     private String grade;
-
+    private String status;
+    
+    public void setStatus(String status) {
+		this.status = status;
+	}
+    public String getStatus() {
+		return status;
+	}
+    
+    
+    public void setId(String id) {
+		this.id = id;
+	}
+    public String getId() {
+		return id;
+	}
     public String getDate() {
         return date;
     }
