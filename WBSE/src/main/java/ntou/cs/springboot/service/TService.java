@@ -69,12 +69,37 @@ public class TService {
 		old.setNumber(info.getNumber());
 		old.setName(info.getName());
 		old.setTemperature(info.getTemperature());
-		old.setStatus(info.getStatus());
+		old.setStatus("修改後未審核");
 		return repository.save(old);
 		
 		}
 
-	
+public Info tinsertInfo(Info info) {
+		
+		System.out.println(info.getClassX());
+		 System.out.println(info.getDate());
+		 System.out.println(info.getGrade());
+		 System.out.println(info.getName());
+		 System.out.println(info.getNote());
+		 System.out.println(info.getTemperature());
+		 System.out.println(info.getNumber());
+		 
+		Info old = new Info();
+		old =repository.findbyidforone(info.getNumber(),info.getDate()).findFirst().orElse(null); 
+		if(old==null)
+			System.out.println("isnull");
+		old.setId(old.getId());
+		old.setNote(info.getNote());
+		old.setClassX(info.getClassX());
+		old.setDate(info.getDate());
+		old.setGrade(info.getGrade());
+		old.setNumber(info.getNumber());
+		old.setName(info.getName());
+		old.setTemperature(info.getTemperature());
+		old.setStatus(info.getStatus());
+		return repository.save(old);
+		
+		}
 	
 	
 	public List<Info> findinfo(){
@@ -89,9 +114,24 @@ public class TService {
 		
 	}
 
+	public String checktodayinfoservice(String date,String number) {
+		String check ="";
+		if(repository.findbyidforone(number,date).findFirst().orElse(null)!=null) {
+//			System.out.println(repository.findbyidforone(number,date).findFirst().orElse(null).getDate());
+			check = "今日已填寫表單";
+		}else {
+			check = "今日尚未填寫";
+		}
+		return check; 
+	}
 	
 	
 	
+	
+	public Info findinfobyidanddate(String number,String date) {
+		return repository.findbyidforone(number,date).findFirst().orElse(null);
+		
+	}
 	
 	
 }

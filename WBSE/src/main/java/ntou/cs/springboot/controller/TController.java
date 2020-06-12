@@ -1,12 +1,16 @@
 package ntou.cs.springboot.controller;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +73,7 @@ public class TController {
 
 	        return ResponseEntity.ok().body(info);
 	    }
-	 	
+	 		 	
 	 	@PutMapping("/teacher")
 	    public ResponseEntity<Info> tupdateInfo(@ModelAttribute Info request) {
 		 
@@ -81,7 +85,7 @@ public class TController {
 		 System.out.println(request.getTemperature());
 		 System.out.println(request.getNote());
 		 
-		 Info info = Tservice.insertInfo(request);
+		 Info info = Tservice.tinsertInfo(request);
 
 //	        URI location = ServletUriComponentsBuilder
 //	                .fromCurrentRequest()
@@ -100,10 +104,54 @@ public class TController {
 		}
 	    
 		//學生查看歷史表單
+				@GetMapping("/student/{id}/date")
+				public ResponseEntity<Info> findbystudentidnddate(@PathVariable("id")String  id,String date){
+					
+					return ResponseEntity.ok().body(Tservice.findinfobyidanddate(id,date));
+				}
+		
+		//學生查看歷史表單
 		@GetMapping("/student/{id}")
 		public ResponseEntity<List<Info>> findbystudentid(@PathVariable("id")String  id){
 			
 			return ResponseEntity.ok().body(Tservice.findinfo(id));
 		}
-	
+		//查看是否登入了
+		@GetMapping("/test")
+		public String displayHomePage(Model model, Principal user) {
+			 String name ="";
+		    if (user != null) {
+		         name = user.getName();
+		        System.out.println(name);
+		    }else {
+		    	name = null;
+		    }
+		    
+		   return name;
+		}
+		
+		//查看今日是否填寫表單
+		@GetMapping("/checktodayinfo")
+		public String checktodayinfo(String date ,String number) {
+					 
+				    
+				   return Tservice.checktodayinfoservice(date,number);
+		}
+		
+		
+		
+		@GetMapping("/checkrole")
+		public String printWelcome(ModelMap model, Authentication authentication) {
+			
+			if(authentication==null)
+				return "尚未登入";
+			else if(authentication.getAuthorities().toString().equals("[ROLE_TEACHER]"))
+				return "teacher";
+			else if(authentication.getAuthorities().toString().equals("[ROLE_STUDENT]"))
+				return "student";
+			
+			return "尚未登入";
+		}
+		
+		
 }

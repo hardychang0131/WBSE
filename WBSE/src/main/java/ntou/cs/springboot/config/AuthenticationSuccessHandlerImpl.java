@@ -27,12 +27,16 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 	         HttpSession session = req.getSession();
 	         session.setAttribute(LOGGED_IN, account);
 	         session.setAttribute(USER_TYPE, authority);
+	         
+	         
 	         Map<String, String> result = new HashMap<>();
 	         result.put("authority", authority);
 	         result.put("message", "登入成功");
+	         result.put("number",account);
 	         resp.setContentType("application/json;charset=UTF-8");
 	         PrintWriter out = resp.getWriter();
 	         resp.setStatus(200);
+	         
 	         ObjectMapper om = new ObjectMapper();
 	         out.write(om.writeValueAsString(result));
 	         out.flush();

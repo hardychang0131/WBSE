@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("student2").password("456").roles("STUDENT");
                
     }
-
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling()
@@ -48,9 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/thermometer/teacher/**").hasRole("TEACHER")
                 .antMatchers("/thermometer/student/**").hasRole("STUDENT")
+                .antMatchers("/thermometer/login").permitAll()
+                .antMatchers("/thermometer/test").permitAll()
+                .antMatchers("/thermometer/checktodayinfo").permitAll()
                 .and()
                 .logout()
-                .logoutUrl("thermometer/logout")
+                .logoutUrl("/thermometer/logout")
                 .invalidateHttpSession(true)
                 .logoutSuccessHandler((req, resp, auth) -> {
                     resp.setContentType("application/json;charset=UTF-8");
@@ -74,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationManager(authenticationManagerBean());
         filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandlerImpl());
         filter.setAuthenticationFailureHandler(new AuthenticationFailureHandlerImpl());
-        filter.setFilterProcessesUrl("/api/login");
+        filter.setFilterProcessesUrl("/thermometer/login");
         return filter;
     }
     
