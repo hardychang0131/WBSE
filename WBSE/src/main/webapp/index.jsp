@@ -27,6 +27,11 @@
     	<input type="button" id="loginbutton" value="登入" onclick="showlogin()" style="display:block;" />
         <input type="button" id="showinfolistbutton"value="填寫表單" onclick="showinfoList()"  style="display:none;"/>
         <input type="button" id="history"value="查看歷史紀錄" onclick="showhistory()"  style="display:none;"/>
+        
+        <input type="button" id="tcheckinfostatus"value="審查表單" onclick="showsetinfo()"  style="display:none;"/>
+        <input type="button" id="tshowinfo"value="查看表單" onclick="showallinfo()"  style="display:none;"/>
+        
+        
     </aside>
 
     <!-- Main -->
@@ -45,6 +50,10 @@
  
     
     </main>
+    
+    <aside id="right" style="width: 20%;">
+    
+    </aside>
 </div>
 </body>
 
@@ -85,8 +94,8 @@ function showlogin() {
 	$("#main").empty()
 		var content =
 			  "<form action='#'>"
-			  +"<p>請輸入帳號密碼</p><p>account: <input type='text' id='account' name='account' value=''/></p>"
-			  +"<p>password: <input type='text' id='password' name='password' value=''/></p>"
+			  +"<p>請輸入帳號密碼</p><p>帳號: <input type='text' id='account' name='account' value=''/></p>"
+			  +"<p>密碼: <input type='text' id='password' name='password' value=''/></p>"
 			  +"<input type='button' value='Submit' onclick='login()' />"
 			  +"</form>";
 						 
@@ -130,34 +139,56 @@ function login() {
 	        type: "POST",
 	        contentType: "application/json",	        
 	        data: myJSON,
-	        success: function(data){
-	        	$("#main").empty()
+	        success: function(data){		        
+	         	$("#main").empty()
 	        	$("#welcome").prepend("<input type='button' value='登出' onclick='logout()' />")
 	        	$("#welcome").prepend("<h5 >歡迎"+"</h5>"+"<h5 id='numbertmp'>"+data.number+"</h5>")
 	        	$("#main").append("<p>登入成功</p>")
-	        	do_change()
-	        	
-	        },
+	        	let Url = "/thermometer/checkrole";
+		  			makeAjaxCall(Url,"GET").then(function (data){
+		        	console.log(data);
+		        	if(data=="teacher"){
+		        		do_changeforteacher()
+			        	}
+		        	else if(data=="student"){
+		        		do_change()
+			        	}
+		        	
+		  			},function(xhr, ajaxOptions, thrownError){
+			            console.log(xhr.status);
+			            console.log(thrownError);
+			        }) 
+		        },
 	        error: function(data){
 	        	$("#main").empty()
 	           $("#main").append("<p>登入失敗，帳號或密碼錯誤</p>")
-	        }     
+			 }     
 	 }); 
 
 	  
-	   
-	   }
+
+
+		   
+}
 	   
 function do_change(){
 	document.getElementById("loginbutton").style.display = "none";
 	document.getElementById("showinfolistbutton").style.display = "block";
 	document.getElementById("history").style.display = "block";
+	
 	}
 
 function do_changeforlogout(){
 	document.getElementById("loginbutton").style.display = "block";
 	document.getElementById("showinfolistbutton").style.display = "none";
 	document.getElementById("history").style.display = "none";
+	document.getElementById("tcheckinfostatus").style.display = "none";
+	document.getElementById("tshowinfo").style.display = "none";
+	}
+function do_changeforteacher(){
+	document.getElementById("loginbutton").style.display = "none";
+	document.getElementById("tcheckinfostatus").style.display = "block";
+	document.getElementById("tshowinfo").style.display = "block";
 	}
 	
  function showinfoList() {
@@ -226,7 +257,7 @@ function do_changeforlogout(){
 		  
 		   		if(data==null){	
 					$("#main").empty()
-		        	$("#welcome").prepend("<p>尚未填寫表單</p>")
+		        	$("#main").prepend("<p>尚未填寫表單</p>")
 					}else{
 						$("#main").empty()
 			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
@@ -252,6 +283,39 @@ function do_changeforlogout(){
 
 	   }
 
+
+
+ function showsetinfo() {
+	 var today = document.getElementById("date").textContent;
+	   let jsonUrl = "/thermometer/teacher/findbydate?date="+today;
+	   $.get(jsonUrl, function(data) {	  
+		   		if(data==null){	
+					$("#main").empty()
+		        	$("#main").prepend("<p>尚未有人填寫表單</p>")
+					}else{
+						 console.log("not null")
+						$("#main").empty()
+			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
+			        	
+			        	for (let item in data) { 
+			        		console.log(data[item].grade)
+			        		console.log(data[item].classX)
+				    	
+			        	var tmp =
+			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  + "<td>" + "<input type='button' value='審查' onclick='setinfo()' />" + "</td>"+ "</tr>";
+			        	$("#myhistory").append(tmp)
+						}
+	 				  }		
+			  });
+	   }
+
+
+
+
+
+
+
+ 
  function updateinfoList() {
 		$("#main").empty();
 		var number = document.getElementById("numbertmp").textContent;
@@ -327,6 +391,35 @@ function makeAjaxCall(url, methodType){
 		 });
 		
 		}
+
+function showallinfo() {
+	
+	   let jsonUrl = "/thermometer/teacher";
+	   $.get(jsonUrl, function(data) {	  
+		   		if(data==null){	
+					$("#main").empty()
+		        	$("#main").prepend("<p>尚未有人填寫表單</p>")
+					}else{
+						 console.log("not null")
+						$("#main").empty()
+			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
+			        	
+			        	for (let item in data) { 
+			        		console.log(data[item].grade)
+			        		console.log(data[item].classX)
+				    	
+			        	var tmp =
+			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  +  "</tr>";
+			        	$("#myhistory").append(tmp)
+						}
+						var tmp=
+							"<p>輸入要查詢的學號: <input type='text' id='number' name='number' value=''/></p>"
+							+"<input type='button' value='搜尋' onclick='serachbynumber()' />"
+							$("#right").append(tmp)
+	 				  }		
+			  });
+	   }
+
 
 
 </script>

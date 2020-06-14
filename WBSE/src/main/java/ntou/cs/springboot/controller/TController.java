@@ -51,7 +51,7 @@ public class TController {
 	        return ResponseEntity.ok().body(info);
 	    }
 	
-	 	//老師審核+學生修改當日表單用
+	 	//學生修改當日表單用
 	 	@PutMapping("/student")
 	    public ResponseEntity<Info> updateInfo(@ModelAttribute Info request) {
 		 
@@ -103,12 +103,28 @@ public class TController {
 			return ResponseEntity.ok().body(Tservice.findinfo());
 		}
 	    
+		
+		//老師查看當天所有學生表單
+		@GetMapping("/teacher/findbydate")
+		public ResponseEntity<List<Info>> findbydate(String  date){
+				//	System.out.println("進api");
+					return ResponseEntity.ok().body(Tservice.findinfobydate(date));
+		}
+		
+		
+		//老師查看當天所有學生表單
+		@GetMapping("/teacher/{id}")
+		public ResponseEntity<List<Info>> tfindbysid(@PathVariable("id")String  id){
+			return ResponseEntity.ok().body(Tservice.findinfo(id));
+		}
+		
+		
 		//學生查看歷史表單
-				@GetMapping("/student/{id}/date")
-				public ResponseEntity<Info> findbystudentidnddate(@PathVariable("id")String  id,String date){
+		@GetMapping("/student/{id}/date")
+		public ResponseEntity<Info> findbystudentidnddate(@PathVariable("id")String  id,String date){
 					
 					return ResponseEntity.ok().body(Tservice.findinfobyidanddate(id,date));
-				}
+		}
 		
 		//學生查看歷史表單
 		@GetMapping("/student/{id}")

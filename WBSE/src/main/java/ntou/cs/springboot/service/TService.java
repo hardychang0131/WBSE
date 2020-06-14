@@ -25,7 +25,7 @@ public class TService {
 	
 	public Info createInfo(Info info) {
 		
-		System.out.println(info.getClassX());
+		 System.out.println(info.getClassX());
 		 System.out.println(info.getDate());
 		 System.out.println(info.getGrade());
 		 System.out.println(info.getName());
@@ -49,7 +49,7 @@ public class TService {
 
 	public Info insertInfo(Info info) {
 		
-		System.out.println(info.getClassX());
+		 System.out.println(info.getClassX());
 		 System.out.println(info.getDate());
 		 System.out.println(info.getGrade());
 		 System.out.println(info.getName());
@@ -113,7 +113,13 @@ public Info tinsertInfo(Info info) {
 		return repository.findbyid(id);
 		
 	}
-
+	
+	
+	public List<Info> findinfobydate(String date){
+		
+		return repository.findbydate(date);
+		
+	}
 	public String checktodayinfoservice(String date,String number) {
 		String check ="";
 		if(repository.findbyidforone(number,date).findFirst().orElse(null)!=null) {

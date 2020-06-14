@@ -21,5 +21,6 @@ public interface TRepository extends MongoRepository<Info, String>{
 	@Query("{$and: [ { 'number':  ?0  }, { 'date':  ?1  } ]}")
 	Stream<Info> findbyidforone(String number ,String date);
 	
-	
+	@Query("{ 'date' : ?0 }")
+	List<Info> findbydate(String date);
 }
