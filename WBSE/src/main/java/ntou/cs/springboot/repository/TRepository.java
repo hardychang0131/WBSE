@@ -23,4 +23,8 @@ public interface TRepository extends MongoRepository<Info, String>{
 	
 	@Query("{ $and: [{'date' : ?0},{'status':'尚未審核'}]}")
 	List<Info> findbydate(String date);
+	
+	
+	@Query("{ 'date' : ?0}")
+	List<Info> findbytdate(String date);
 }

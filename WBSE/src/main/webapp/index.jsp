@@ -82,7 +82,7 @@ $.get(jsonUrl, function(data1) {
 				console.log(data)
 
 				if(data=="teacher"){
-					
+									
 									$("#main").empty()
 						        	$("#welcome").prepend("<input type='button' value='登出' onclick='logout()' />")
 						        	$("#welcome").prepend("<h5 >歡迎"+"</h5>"+"<h5 id='numbertmp'>"+data1+"</h5>")
@@ -137,7 +137,7 @@ function showlogin() {
 			  "<form action='#'>"
 			  +"<p>請輸入帳號密碼</p><p>帳號: <input type='text' id='account' name='account' value=''/></p>"
 			  +"<p>密碼: <input type='text' id='password' name='password' value=''/></p>"
-			  +"<input type='button' value='Submit' onclick='login()' />"
+			  +"<input type='button' value='登入' onclick='login()' />"
 			  +"</form>";
 						 
 			  $("#main").append(content); 
@@ -153,11 +153,13 @@ function logout() {
 	        success: function(data){
 	        	$("#main").empty()
 	        	$("#welcome").empty()
+	        	$("#right").empty()
 	           $("#main").append("<p>登出成功</p>")
 	           
 	           do_changeforlogout()
 	        },
 	        error: function(data){
+	        	$("#right").empty()
 	        	$("#main").empty()
 	           $("#main").append("<p>登出失敗</p>")
 	        }     
@@ -329,7 +331,7 @@ function do_changeforteacher(){
 
  function showsetinfo() {
 	 var today = document.getElementById("date").textContent;
-	   let jsonUrl = "/thermometer/teacher/findbydate?date="+today;
+	   let jsonUrl = "/thermometer/teacher/findbytoday?date="+today;
 	   $.get(jsonUrl, function(data) {	  
 		   		if(data==null){	
 					$("#main").empty()
@@ -337,6 +339,7 @@ function do_changeforteacher(){
 					}else{
 						 console.log("not null")
 						$("#main").empty()
+						$("#right").empty()
 			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
 			        	
 			        	for (let item in data) { 
@@ -457,11 +460,58 @@ function showallinfo() {
 						var tmp=
 							"<p>輸入要查詢的學號: <input type='text' id='number' name='number' value=''/></p>"
 							+"<input type='button' value='搜尋' onclick='serachbynumber()' />"
-							+"<input type='button' value='查看尚未填寫者' onclick='whonowrite()' />"
+							+"<p>輸入要查詢的日期: <input type='text' id='date1' name='date1' value=''/></p>"
+							+"<input type='button' value='搜尋' onclick='serachbydate()' />"
+							+"</br>"
+							+"<input type='button' value='查看尚未填寫者' onclick='whonowrite()' />";
 							$("#right").append(tmp)
 	 				  }		
 			  });
 	   }
+
+
+function serachbydate(){
+
+
+	var date1 = document.getElementById("date1").value;
+	console.log(date1) 
+	date1.replace(/\//g, "%2F");
+	console.log("new:"+date1) 
+	/* var date = "2020%2F6%2F12" */
+	   let jsonUrl = "/thermometer/teacher/findbydate?date="+date1;
+
+
+	   
+	   $.get(jsonUrl, function(data) {	  
+		   console.log(data)
+		   		if(data==null){	
+					$("#main").empty()
+		        	$("#main").prepend("<p>尚未填寫表單</p>")
+					}else{
+						 console.log("not null")
+						$("#main").empty()
+			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
+			        	
+			        	for (let item in data) { 
+			        		console.log(data[item].grade)
+			        		console.log(data[item].classX)
+				    	
+			        	var tmp =
+			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  +  "</tr>";
+			        	$("#myhistory").append(tmp)
+						}
+						
+	 				  }		
+			  });
+
+
+
+
+
+
+
+	
+}
 
 function serachbynumber() {
 	var number = document.getElementById("number").value;

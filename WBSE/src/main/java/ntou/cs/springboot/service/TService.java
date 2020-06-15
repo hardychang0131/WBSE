@@ -113,11 +113,17 @@ public Info tinsertInfo(Info info) {
 		return repository.findbyid(id);
 		
 	}
+	public List<Info> findinfobytoday(String date){
+		
+		return repository.findbydate(date);
+		
+	}
+	
 	
 	
 	public List<Info> findinfobydate(String date){
 		
-		return repository.findbydate(date);
+		return repository.findbytdate(date);
 		
 	}
 	public String checktodayinfoservice(String date,String number) {

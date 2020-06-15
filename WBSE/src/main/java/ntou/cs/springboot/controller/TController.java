@@ -104,10 +104,25 @@ public class TController {
 		}
 	    
 		
+		
+		//老師查看當天所有學生表單
+		@GetMapping("/teacher/findbytoday")
+		public ResponseEntity<List<Info>> findbytoday(String  date){
+			System.out.println("進api");
+			System.out.println("date:"+date);
+							
+			return ResponseEntity.ok().body(Tservice.findinfobytoday(date));
+		}
+		
+		
+		
+		
 		//老師查看當天所有學生表單
 		@GetMapping("/teacher/findbydate")
 		public ResponseEntity<List<Info>> findbydate(String  date){
-				//	System.out.println("進api");
+					System.out.println("進api");
+					System.out.println("date:"+date);
+					
 					return ResponseEntity.ok().body(Tservice.findinfobydate(date));
 		}
 		
