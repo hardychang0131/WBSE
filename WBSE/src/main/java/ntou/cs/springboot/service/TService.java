@@ -69,7 +69,7 @@ public class TService {
 		old.setNumber(info.getNumber());
 		old.setName(info.getName());
 		old.setTemperature(info.getTemperature());
-		old.setStatus("修改後未審核");
+		old.setStatus("尚未審核");
 		return repository.save(old);
 		
 		}
@@ -96,7 +96,7 @@ public Info tinsertInfo(Info info) {
 		old.setNumber(info.getNumber());
 		old.setName(info.getName());
 		old.setTemperature(info.getTemperature());
-		old.setStatus(info.getStatus());
+		old.setStatus("已審核");
 		return repository.save(old);
 		
 		}

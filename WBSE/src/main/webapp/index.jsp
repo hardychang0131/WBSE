@@ -62,7 +62,7 @@
 
 
 $(function() {
-	  test();
+	  test2();
 	var  n =  new Date();
 	 var y = n.getFullYear();
 	 var m = n.getMonth() + 1;
@@ -71,6 +71,47 @@ $(function() {
 	  
 	});
 
+function test2(){
+
+	let Url="/thermometer/checkrole";
+	let jsonUrl = "/thermometer/test";
+$.get(jsonUrl, function(data1) {
+	console.log(data1)
+	if(data1!=""){
+	   makeAjaxCall(Url,"GET").then(function (data){
+				console.log(data)
+
+				if(data=="teacher"){
+					
+									$("#main").empty()
+						        	$("#welcome").prepend("<input type='button' value='登出' onclick='logout()' />")
+						        	$("#welcome").prepend("<h5 >歡迎"+"</h5>"+"<h5 id='numbertmp'>"+data1+"</h5>")
+						        	do_changeforteacher()
+									
+								  
+						
+							  
+				}else if(data=="student"){
+											   			
+									$("#main").empty()
+						        	$("#welcome").prepend("<input type='button' value='登出' onclick='logout()' />")
+						        	$("#welcome").prepend("<h5 >歡迎"+"</h5>"+"<h5 id='numbertmp'>"+data1+"</h5>")
+						        	do_change()
+									
+								  
+						
+							
+				
+				}
+		}, function(xhr, ajaxOptions, thrownError){
+		            console.log(xhr.status);
+		            console.log(thrownError);
+		        });
+
+	}
+
+});
+}
 
 
 
@@ -268,9 +309,10 @@ function do_changeforteacher(){
 					    	
 			        	var tmp =
 			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>" ;
-			       		if(data[item].date==today)
-				       		tmp = tmp + "<td>" + "<input type='button' value='修改' onclick='updateinfoList()' />" + "</td>"+ "</tr>";
-				       		else{
+			       		if(data[item].date==today){
+				       		if(data[item].status=="尚未審核")
+				       			tmp = tmp + "<td>" + "<input type='button' value='修改' onclick='updateinfoList()' />" + "</td>"+ "</tr>";
+			       		}else{
 							tmp =tmp+ "</tr>";
 
 					       		}
@@ -300,9 +342,9 @@ function do_changeforteacher(){
 			        	for (let item in data) { 
 			        		console.log(data[item].grade)
 			        		console.log(data[item].classX)
-				    	
+				    	console.log(item)
 			        	var tmp =
-			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  + "<td>" + "<input type='button' value='審查' onclick='setinfo()' />" + "</td>"+ "</tr>";
+			        		"<tr>"+"<td>" + data[item].name + "</td>" + "<td id='numbertag"+item+"'>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  + "<td>" + "<input type='button' value='審查' onclick='showupdateinfoList("+item+")' />" + "</td>"+ "</tr>";
 			        	$("#myhistory").append(tmp)
 						}
 	 				  }		
@@ -314,13 +356,12 @@ function do_changeforteacher(){
 
 
 
-
  
  function updateinfoList() {
 		$("#main").empty();
 		var number = document.getElementById("numbertmp").textContent;
 		var today = document.getElementById("date").textContent;
-		 let jsonUrl = "/thermometer/student/"+number+"/date?date="+today;
+		 let jsonUrl = "/thermometer/student/"+data+"/date?date="+today;
 		 $.get(jsonUrl, function(data) {
 			 console.log(data.grade)
      		console.log(data.classX)
@@ -393,7 +434,7 @@ function makeAjaxCall(url, methodType){
 		}
 
 function showallinfo() {
-	
+	var number = document.getElementById("numbertmp").value;
 	   let jsonUrl = "/thermometer/teacher";
 	   $.get(jsonUrl, function(data) {	  
 		   		if(data==null){	
@@ -412,15 +453,104 @@ function showallinfo() {
 			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  +  "</tr>";
 			        	$("#myhistory").append(tmp)
 						}
+						 $("#right").empty()
 						var tmp=
 							"<p>輸入要查詢的學號: <input type='text' id='number' name='number' value=''/></p>"
 							+"<input type='button' value='搜尋' onclick='serachbynumber()' />"
+							+"<input type='button' value='查看尚未填寫者' onclick='whonowrite()' />"
 							$("#right").append(tmp)
 	 				  }		
 			  });
 	   }
 
+function serachbynumber() {
+	var number = document.getElementById("number").value;
+	   let jsonUrl = "/thermometer/teacher/"+number;
+	   
+	   $.get(jsonUrl, function(data) {	  
+		   		if(data==null){	
+					$("#main").empty()
+		        	$("#main").prepend("<p>尚未填寫表單</p>")
+					}else{
+						 console.log("not null")
+						$("#main").empty()
+			        	$("#main").append("<table><tbody id='myhistory'><tr> <th>姓名</th><th>學號</th><th>年級</th><th>班級</th><th>額溫</th><th>備註</th><th>填寫日期</th><th>狀態</th></tr></tbody></table> ")
+			        	
+			        	for (let item in data) { 
+			        		console.log(data[item].grade)
+			        		console.log(data[item].classX)
+				    	
+			        	var tmp =
+			        		"<tr>" +"<td>" + data[item].name + "</td>" + "<td>" + data[item].number + "</td>" + "<td>" + data[item].grade+ "</td>" + "<td>" + data[item].classX + "</td>" + "<td>" + data[item].temperature + "</td>" + "<td>" + data[item].note + "</td>" + "<td>" + data[item].date + "</td>" + "<td>" + data[item].status + "</td>"  +  "</tr>";
+			        	$("#myhistory").append(tmp)
+						}
+						
+	 				  }		
+			  });
+	   }
+function tupdateinfo() {
+
+	 var mydata = $('form').serialize();
+	 
+	   let jsonUrl = "/thermometer/teacher";
+	    $.ajax({
+	        url:jsonUrl,
+	        type: "PUT",	        
+	        data: mydata,
+	        success: function(data){
+	        	
+	        	$("#main").empty()
+	        	$("#main").append("<p>表單已經修改</p>")
+	        },
+	        error: function(xhr, ajaxOptions, thrownError){
+	        	$("#main").empty()
+	        	$("#main").append("<p>表單修改失敗</p>")
+	        }     
+	 }); 
 
 
+
+	 
+	 }
+
+
+function showupdateinfoList(item) {
+	var tmp = "numbertag"+item
+	console.log("tmp:"+tmp)
+	
+	var number = document.getElementById(tmp).textContent;
+	console.log("n:"+number)
+	var today = document.getElementById("date").textContent;
+	console.log("t"+today)
+	$("#main").empty();
+	console.log("ininininininininininininini")
+	 let jsonUrl = "/thermometer/teacher/"+number+"/date?date="+today;
+	 $.get(jsonUrl, function(data) {
+		 console.log(data.grade)
+ 		console.log(data.classX)
+		 var content =
+			  "<form action='#'>"
+			  +"填寫表單<p>日期: <input type='text' id='date' name='date' readonly='readonly' value='"+data.date+"'/></p>"
+			  +"<p>學號: <input type='text' id='number' name='number' readonly='readonly' value='"+data.number+"'/></p>"
+			  +"年級: <select name='grade'><option selected='selected' readonly='readonly'>"+data.grade+"</select>"
+			  +"班級: <select name='classX'><option selected='selected' readonly='readonly'>"+data.classX+"</select>"
+			  +"姓名: <input type='text' id='name' name='name' readonly='readonly' value='"+data.name+"'/>"
+			  +"<p>測量的額溫:<input type='text' id='temperature' name='temperature' readonly='readonly' value='"+data.temperature+"'/>"
+			  +"</br>"
+			  +"備註:<textarea name='note' rows='4' cols='50' readonly='readonly'>"+data.note+"</textarea>"
+			  +"</br>"
+			  +"<input type='button' value='審核完畢' onclick='tupdateinfo()' />"
+			  +"</form>";
+						 
+			  $("#main").append(content); 
+
+		 });
+
+
+
+	
+	
+		
+}
 </script>
 </html>

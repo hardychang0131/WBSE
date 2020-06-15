@@ -125,7 +125,13 @@ public class TController {
 					
 					return ResponseEntity.ok().body(Tservice.findinfobyidanddate(id,date));
 		}
-		
+		//老師查看審核表單
+		@GetMapping("/teacher/{id}/date")
+		public ResponseEntity<Info> findtbystudentidnddate(@PathVariable("id")String  id,String date){
+							
+							return ResponseEntity.ok().body(Tservice.findinfobyidanddate(id,date));
+		}
+				
 		//學生查看歷史表單
 		@GetMapping("/student/{id}")
 		public ResponseEntity<List<Info>> findbystudentid(@PathVariable("id")String  id){
@@ -155,7 +161,7 @@ public class TController {
 		}
 		
 		
-		
+		//查看登入的身份
 		@GetMapping("/checkrole")
 		public String printWelcome(ModelMap model, Authentication authentication) {
 			

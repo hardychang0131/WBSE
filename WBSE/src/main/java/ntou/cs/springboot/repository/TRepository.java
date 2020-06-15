@@ -18,9 +18,9 @@ public interface TRepository extends MongoRepository<Info, String>{
 //	@Query("{ 'number' : ?0,'date' : ?0 }")
 //	Stream<Info> findbyidforone(String number ,String date);
 	
-	@Query("{$and: [ { 'number':  ?0  }, { 'date':  ?1  } ]}")
+	@Query("{$and: [ { 'number':  ?0  }, { 'date':  ?1  },{'status':'尚未審核'}]}")
 	Stream<Info> findbyidforone(String number ,String date);
 	
-	@Query("{ 'date' : ?0 }")
+	@Query("{ $and: [{'date' : ?0},{'status':'尚未審核'}]}")
 	List<Info> findbydate(String date);
 }
