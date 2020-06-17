@@ -27,4 +27,7 @@ public interface TRepository extends MongoRepository<Info, String>{
 	
 	@Query("{ 'date' : ?0}")
 	List<Info> findbytdate(String date);
+	
+	@Query("{ $and: [{'date' : ?0},{'number':?1}]}")
+	Stream<Info> findcheckexist(String date,String number);
 }

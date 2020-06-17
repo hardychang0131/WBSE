@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import ntou.cs.springboot.entity.Info;
+import ntou.cs.springboot.entity.Student;
 import ntou.cs.springboot.service.TService;
 
 @RestController
@@ -189,6 +190,32 @@ public class TController {
 			
 			return "尚未登入";
 		}
+		
+		
+		//老師查看誰沒寫
+		@GetMapping("/teacher/whonowrite")
+		public ResponseEntity<List<String>> checkwhonowrite(String  date){
+			
+			return ResponseEntity.ok().body(Tservice.findwhonowrite(date));
+		}
+		
+		
+		//學生送表單用
+	 	@PostMapping("")
+	    public ResponseEntity<Student> createIStudent(@ModelAttribute Student request) {
+		 
+		 System.out.print(request.getNumber());
+		 Student student = Tservice.createstudent(request);
+
+//	        URI location = ServletUriComponentsBuilder
+//	                .fromCurrentRequest()
+//	                .path("/{id}")
+//	                .buildAndExpand(info.getNumber())
+//	                .toUri();
+
+	        return ResponseEntity.ok().body(student);
+	    }
+	
 		
 		
 }

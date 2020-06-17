@@ -1,12 +1,16 @@
 package ntou.cs.springboot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import ntou.cs.springboot.repository.SRepository;
 import ntou.cs.springboot.repository.TRepository;
 import ntou.cs.springboot.entity.Handler;
 import ntou.cs.springboot.entity.Info;
+import ntou.cs.springboot.entity.Student;
 
 
 @Service
@@ -14,24 +18,24 @@ public class TService {
 	
 	@Autowired
 	private TRepository repository;
-	
-//	@Autowired
-//	private Handler handler;
+	@Autowired
+	private SRepository srepository;
+
 	
 	public TService(TRepository repository) {
 		this.repository = repository;
-//		this.handler = handler;
+		this.srepository = srepository;
 	}
 	
 	public Info createInfo(Info info) {
 		
-		 System.out.println(info.getClassX());
-		 System.out.println(info.getDate());
-		 System.out.println(info.getGrade());
-		 System.out.println(info.getName());
-		 System.out.println(info.getNote());
-		 System.out.println(info.getTemperature());
-		 System.out.println(info.getNote());
+//		 System.out.println(info.getClassX());
+//		 System.out.println(info.getDate());
+//		 System.out.println(info.getGrade());
+//		 System.out.println(info.getName());
+//		 System.out.println(info.getNote());
+//		 System.out.println(info.getTemperature());
+//		 System.out.println(info.getNote());
 		
 		
 		Info tmp = new Info();
@@ -46,7 +50,21 @@ public class TService {
 		return repository.insert(tmp);
 		
 		}
-
+	
+	public Student createstudent(Student student) {
+		
+		
+		
+		Student tmp = new Student();
+		tmp.setNumber(student.getNumber());
+		System.out.println(tmp.getNumber());
+		return srepository.insert(tmp);
+		
+		}
+	
+	
+	
+	
 	public Info insertInfo(Info info) {
 		
 		 System.out.println(info.getClassX());
@@ -145,5 +163,36 @@ public Info tinsertInfo(Info info) {
 		
 	}
 	
+	
+	public List<String> findwhonowrite(String date ) {
+		
+		List<Student> students =  srepository.findAll();
+		List<String> check = new ArrayList<>();
+		for(int i =0;i<students.size();i++)
+		{	
+			System.out.println(students.get(i).getNumber());
+		
+			if(	repository.findcheckexist(date,students.get(i).getNumber()).findFirst().orElse(null)==null)
+			{	
+				
+				System.out.println("in if");
+				check.add(students.get(i).getNumber());
+			}
+			
+		}	
+		
+		if(check==null)
+			check.add("皆以填寫");
+		
+		for(int i =0;i<check.size();i++)
+		{	
+			System.out.println(check.get(i));
+			
+		
+		}
+		
+		return check;
+		
+	}
 	
 }

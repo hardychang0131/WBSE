@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/thermometer/login").permitAll()
                 .antMatchers("/thermometer/test").permitAll()
                 .antMatchers("/thermometer/checktodayinfo").permitAll()
+                .antMatchers("/thermometer/").permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/thermometer/logout")
